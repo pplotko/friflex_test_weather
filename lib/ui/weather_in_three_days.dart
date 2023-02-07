@@ -6,6 +6,7 @@ import 'package:friflex_test_weather/ui/search_page.dart';
 import '../bloc/weather_bloc.dart';
 import '../bloc/weather_event.dart';
 import '../bloc/weather_state.dart';
+import '../theme_cubit/theme_cubit.dart';
 
 class WeatherInThreeDays extends StatefulWidget {
   const WeatherInThreeDays({Key? key, required this.text}) : super(key: key);
@@ -30,6 +31,11 @@ class _WeatherInThreeDaysState extends State<WeatherInThreeDays> {
         appBar: AppBar(
           title: Text('City: ${widget.text}'),
           actions: [
+            IconButton(
+              key: const Key('brightness'),
+              icon: const Icon(Icons.brightness_6),
+              onPressed: () => context.read<ThemeCubit>().toggleTheme(),
+            ),
             IconButton(
               key: const Key('search_iconButton'),
               icon: const Icon(Icons.search),

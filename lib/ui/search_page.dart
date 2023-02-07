@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../service/weather_repository.dart';
+import '../theme_cubit/theme_cubit.dart';
 import 'detailed_weather_information_page.dart';
 
 ///The search page allows users to enter the name of the city and provides them result
@@ -29,7 +31,16 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(title: const Text('City Search')),
+      appBar: AppBar(
+        title: const Text('City Search'),
+        actions: [
+          IconButton(
+            key: const Key('brightness'),
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () => context.read<ThemeCubit>().toggleTheme(),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(

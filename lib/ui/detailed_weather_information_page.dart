@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/weather_bloc.dart';
 import '../bloc/weather_event.dart';
 import '../bloc/weather_state.dart';
+import '../theme_cubit/theme_cubit.dart';
 import './weather_in_three_days.dart';
 
 class DetailedWeatherInformationPage extends StatefulWidget {
@@ -43,6 +44,11 @@ class _DetailedWeatherInformationPageState
       appBar: AppBar(
         title: Text('City: ${widget.text}'),
         actions: [
+          IconButton(
+            key: const Key('brightness'),
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () => context.read<ThemeCubit>().toggleTheme(),
+          ),
           ///Button for next page: WeatherInThreeDays
           IconButton(
             key: const Key('weather_in_three_days_iconButton'),
@@ -198,10 +204,20 @@ class _DetailedWeatherInformationPageState
                           fontWeight: FontWeight.w400,
                         ),
                       ),
+                      Text(
+                        'weather description: ${state.loadedWeather.current.weather[0].description != null
+                            ? (state.loadedWeather.current.weather[0].description)
+                            : 'нет данных'} ',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0XFFFFFFFF),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                       const SizedBox(height: 40),
 
                       // Show current weather coordinates
-                      const Text('Coordinates of the city:'),
+                      const Text('Location coordinates:'),
                       Text('longitude= ${state.loadedWeather.lon ?? 'нет данных'},'
                           ' latitude = ${state.loadedWeather.lat ?? 'нет данных'}'
                       ),
