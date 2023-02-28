@@ -72,7 +72,7 @@ class MainPage extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'FriflexTestWeather',
         /// go to the search page
-        home: SearchPage(),
+        home: const SearchPage(),
         ),
       );
   }

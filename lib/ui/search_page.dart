@@ -29,6 +29,17 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    SnackBar snackBar = SnackBar(
+      content: const Text('Please enter the name of the city'),
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.only(
+        bottom: MediaQuery.of(context).size.height/2- 50,
+        left: 24,
+        right: 24,
+      ),
+    );
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -41,30 +52,34 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            /// TextField for entering the name of the city
-            /// to transmit the input value, we use _textController
-            child: TextField(
-              controller: _textController,
-              decoration: const InputDecoration(
-                labelText: 'City',
-                hintText: 'Minsk',
+      body: ListView(
+        children: [Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              /// TextField for entering the name of the city
+              /// to transmit the input value, we use _textController
+              child: TextField(
+                controller: _textController,
+                decoration: const InputDecoration(
+                  labelText: 'City',
+                  hintText: 'Minsk',
+                ),
               ),
             ),
-          ),
-          /// A button to confirm the input and move on...
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => DetailedWeatherInformationPage(text: _text,)),
-              );
-            },
-            child: const Text('Accept'),
-          ),
-        ],
+            /// A button to confirm the input and move on...
+            ElevatedButton(
+              onPressed: () {
+                if (_text.isNotEmpty) {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => DetailedWeatherInformationPage(text: _text,)),
+                );
+                } else { ScaffoldMessenger.of(context).showSnackBar(snackBar);};
+              },
+              child: const Text('Accept'),
+            ),
+          ],
+        ),]
       ),
     );
   }

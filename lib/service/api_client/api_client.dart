@@ -15,9 +15,7 @@ class ApiClient {
   static const String ONE_CALL_WEATHER = 'onecall';
   static const int STATUS_OK = 200;
 
-  ApiClient(
-    this._apiKey,
-  ) {
+  ApiClient(this._apiKey) {
     // var _httpClient = http.Client();
   }
 
@@ -35,7 +33,7 @@ class ApiClient {
     return jsonResponse!;
   }
 
-  Future<Map<String, dynamic>?> currentLocation(String cityName) async {
+  Future <List<dynamic>> /*<Map<String, dynamic>?>*/ currentLocation(String cityName) async {
     /// Example of API call: http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}
     String url = 'http://api.openweathermap.org/geo/1.0/direct?';
     /// Build HTTP get url by passing the required parameters
@@ -44,21 +42,25 @@ class ApiClient {
     } else {
       print('Wrong city name');
     }
-    url += '&limit=1';
+    url += '&limit=1000';
     url += '&appid=$_apiKey';
     print('url: $url');
-    // url += 'lang=English}';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == STATUS_OK) {
       print('response.body: ${response.body}');
       var jsonBody = json.decode(response.body);
-      print('currentLocation response: ${jsonBody}');
+      print('currentLocation response: $jsonBody');
+      List<dynamic> citiesList = jsonBody as List<dynamic>;
+      print('Сколько городов с таким названием: ${citiesList.length}');
+      jsonBody.forEach((item) => print('# $item'));
       Map<String, dynamic>? firstInList = jsonBody[0];
-      return firstInList;
+      print('firstInList: $firstInList');
+      return citiesList;
+      // return firstInList;
     } else {
       print('Ошибка при получении координат города');
+      return [];
     }
-
   }
 
   Future<Map<String, dynamic>?> _sendRequest(String tag,

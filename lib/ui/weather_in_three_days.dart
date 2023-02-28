@@ -20,7 +20,7 @@ class _WeatherInThreeDaysState extends State<WeatherInThreeDays> {
 
   @override
   void initState() {
-    BlocProvider.of<WeatherBloc>(context).add(WeatherLoadEvent(widget.text));
+    // BlocProvider.of<WeatherBloc>(context).add(WeatherLoadEvent(widget.text));
     super.initState();
   }
 

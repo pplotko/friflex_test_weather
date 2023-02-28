@@ -10,5 +10,5 @@ class WeathersRepository {
 
   Future<String> getPlace() => _weathersProvider.fetchPlace();
 
-  Future<CityCoordinates> getLocation(cityName) => _weathersProvider.fetchLocation(cityName);
+  Future <List<CityCoordinates>> getLocation(cityName) => _weathersProvider.fetchLocation(cityName);
 }

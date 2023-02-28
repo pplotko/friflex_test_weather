@@ -62,18 +62,26 @@ class WeatherProvider {
     }
   }
 
-  Future <CityCoordinates> fetchLocation(String cityName) async {
+  Future <List<CityCoordinates>> fetchLocation(String cityName) async {
     const String apiKey = '497d04b78cfab23e1679b18e620dd709';
-    CityCoordinates location;
     try {
       var apiClient = ApiClient(apiKey);
-      Map <String, dynamic>?  location = await apiClient.currentLocation(cityName);
-      print('location: $location');
-      final city_coordinates = CityCoordinates.fromJson(location!);
+      /*Map <String, dynamic>?*/
+      List<dynamic> locations = await apiClient.currentLocation(cityName);
+      print('locations: $locations');
+      final List<CityCoordinates> citiesCoordinatList=[];
+      locations.forEach((city) =>
+        citiesCoordinatList.add(CityCoordinates.fromJson(city!)));
+      citiesCoordinatList.forEach((city) {
+        print('city.country: ${city.country}, city.state: ${city.state}');
+        print('city.latitude: ${city.latitude}, city.longitude: ${city.longitude}');
+      });
+      // final city_coordinates = CityCoordinates.fromJson(locations!);
 
-      print('city.latitude: ${city_coordinates.latitude}');
-      print('city.longitude: ${city_coordinates.longitude}');
-      return city_coordinates;
+      // print('city.latitude: ${city_coordinates.latitude}');
+      // print('city.longitude: ${city_coordinates.longitude}');
+      return citiesCoordinatList;
+      // return city_coordinates;
     }
     catch (error) {
       print('$error(Ошибка получения координат города) ${StackTrace.current}');

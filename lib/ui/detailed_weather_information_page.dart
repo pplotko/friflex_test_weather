@@ -90,141 +90,172 @@ class _DetailedWeatherInformationPageState
                     '${state.loadedWeather.current.weather[0].icon}.png';
                 return Container(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text( ///showing the current temperature
-                                    '${state.loadedWeather.current.temp != null
-                                        ? (state.loadedWeather.current.temp - 273).roundToDouble()
-                                        : 'нет данных'}',
-                                    style: const TextStyle(
-                                      fontSize: 32,
-                                      color: Color(0XFFFFFFFF),
-                                      fontWeight: FontWeight.w600,
+                  child: ListView(
+                    padding: const EdgeInsets.all(8),
+                    children: [Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text( ///showing the current temperature
+                                      '${state.loadedWeather.current.temp != null
+                                          ? (state.loadedWeather.current.temp - 273).roundToDouble()
+                                          : 'нет данных'}',
+                                      style: const TextStyle(
+                                        fontSize: 32,
+                                        color: Color(0XFFFFFFFF),
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Text(
-                                    '°C',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      color: Color(0XFFFFFFFF),
-                                      fontWeight: FontWeight.w600,
+                                    const SizedBox(
+                                      width: 10,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              Text(
-                                '${state.loadedWeather.current.weather[0].main != null
-                                    ? state.loadedWeather.current.weather[0].main
-                                    : 'нет данных'} ',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  color: Color(0XFFFFFFFF),
-                                  fontWeight: FontWeight.w600,
+                                    const Text(
+                                      '°C',
+                                      style: TextStyle(
+                                        fontSize: 32,
+                                        color: Color(0XFFFFFFFF),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-
-                          /// Show current weather icon
-                          Padding(
-                            padding: const EdgeInsets.only(right: 32.0),
-                            child: Image.network(
-                              iconUrl,
-                              scale: 0.5,
-                              loadingBuilder: (_, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                              errorBuilder: (_, error, stackTrace) {
-                                print('$error $stackTrace');
-                                return SnackBar(
-                                  content: Container(
-                                    padding: const EdgeInsets.only(top: 30, bottom: 10),
-                                    child: Icon(
-                                      Icons.signal_wifi_connected_no_internet_4,
-                                      color: Colors.grey[600],
-                                      size: 60,
-                                    ),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                Text(
+                                  '${state.loadedWeather.current.weather[0].main != null
+                                      ? state.loadedWeather.current.weather[0].main
+                                      : 'нет данных'} ',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    color: Color(0XFFFFFFFF),
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
+
+                            /// Show current weather icon
+                            Padding(
+                              padding: const EdgeInsets.only(right: 32.0),
+                              child: Image.network(
+                                iconUrl,
+                                scale: 0.5,
+                                loadingBuilder: (_, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                                errorBuilder: (_, error, stackTrace) {
+                                  print('$error $stackTrace');
+                                  return SnackBar(
+                                    content: Container(
+                                      padding: const EdgeInsets.only(top: 30, bottom: 10),
+                                      child: Icon(
+                                        Icons.signal_wifi_connected_no_internet_4,
+                                        color: Colors.grey[600],
+                                        size: 60,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'pressure: ${state.loadedWeather.current.pressure != null
+                              ? (state.loadedWeather.current.pressure)
+                              : 'нет данных'} hPa',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0XFFFFFFFF),
+                            fontWeight: FontWeight.w400,
                           ),
+                        ),
+                        Text(
+                          'humidity: ${state.loadedWeather.current.humidity != null
+                              ? (state.loadedWeather.current.humidity)
+                              : 'нет данных'} %',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0XFFFFFFFF),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          'wind speed: ${state.loadedWeather.current.wind_speed != null
+                              ? (state.loadedWeather.current.wind_speed)
+                              : 'нет данных'} m/s',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0XFFFFFFFF),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          'weather description: ${state.loadedWeather.current.weather[0].description != null
+                              ? (state.loadedWeather.current.weather[0].description)
+                              : 'нет данных'} ',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0XFFFFFFFF),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+
+                        // Show current weather coordinates
+                        Text('State: ${state.cityState} '),
+                        Text('Country: ${state.cityCountry} '),
+                        const Text('Location coordinates:'),
+                        Text('longitude= ${state.loadedWeather.lon ?? 'нет данных'},'
+                            ' latitude = ${state.loadedWeather.lat ?? 'нет данных'}'
+                        ),
+
+                        const SizedBox(height: 4),
+                      ],
+                    ),]
+                  ),
+                );
+              }
+
+
+              if (state is WeatherChoosingCityState){
+                final cityLocationsList = state.cityLocations;
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: cityLocationsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    child: ListTile(
+                     leading: const Icon(Icons.location_city),
+                      title:Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(cityLocationsList[index].state, style: const TextStyle(fontSize: 18)),
+                          Text(cityLocationsList[index].country, style: const TextStyle(fontSize: 22)),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'pressure: ${state.loadedWeather.current.pressure != null
-                            ? (state.loadedWeather.current.pressure)
-                            : 'нет данных'} hPa',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0XFFFFFFFF),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        'humidity: ${state.loadedWeather.current.humidity != null
-                            ? (state.loadedWeather.current.humidity)
-                            : 'нет данных'} %',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0XFFFFFFFF),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        'wind speed: ${state.loadedWeather.current.wind_speed != null
-                            ? (state.loadedWeather.current.wind_speed)
-                            : 'нет данных'} m/s',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0XFFFFFFFF),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        'weather description: ${state.loadedWeather.current.weather[0].description != null
-                            ? (state.loadedWeather.current.weather[0].description)
-                            : 'нет данных'} ',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0XFFFFFFFF),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-
-                      // Show current weather coordinates
-                      const Text('Location coordinates:'),
-                      Text('longitude= ${state.loadedWeather.lon ?? 'нет данных'},'
-                          ' latitude = ${state.loadedWeather.lat ?? 'нет данных'}'
-                      ),
-
-                      const SizedBox(height: 4),
-                    ],
-                  ),
+                      subtitle: Text("city.latitude: ${cityLocationsList[index].latitude}, city.longitude: ${cityLocationsList[index].longitude}'"),
+                    ),
+                    onTap: () {BlocProvider.of<WeatherBloc>(context).add(WeatherLoadEventWithCityCoordinates(widget.text, index));},
+                  );}
                 );
               }
               return Container();

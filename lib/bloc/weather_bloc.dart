@@ -14,16 +14,24 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       emit(WeatherLoadingState());
       try {
         ///making a request for coordinates  of the entered city
-        CityCoordinates cityLocation =
+        List<CityCoordinates> cityLocations =
             await weathersRepository.getLocation(event.text);
-        if (cityLocation != null) {
-          ///making a request for weather in the entered city
+        if (cityLocations.length == 1 ) {
+          ///we have only one city and making a request for weather in the entered city
           final OneCallWeather loadedWeather =
-              await weathersRepository.getAllWeathers(cityLocation);
+              await weathersRepository.getAllWeathers(cityLocations[0]);
           final String loadedPlace = event.text;
           emit(WeatherLoadedState(
             loadedWeather: loadedWeather,
             loadedPlace: loadedPlace,
+            cityState: cityLocations[0].state,
+            cityCountry: cityLocations[0].country,
+          ));
+        }
+        if (cityLocations.length > 1 ) {
+          ///we have to choose a city from the list
+          emit(WeatherChoosingCityState(
+            cityLocations: cityLocations,
           ));
         }
         // final OneCallWeather _loadedWeather = await weathersRepository.getAllWeathers();
@@ -33,6 +41,27 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         emit(WeatherErrorState());
       }
     });
+
+    on<WeatherLoadEventWithCityCoordinates>((event, emit) async {
+      emit(WeatherLoadingState());
+      try {
+        List<CityCoordinates> cityLocations =
+        await weathersRepository.getLocation(event.text);
+
+          final OneCallWeather loadedWeather =
+          await weathersRepository.getAllWeathers(cityLocations[event.index]);
+          emit(WeatherLoadedState(
+            loadedWeather: loadedWeather,
+            loadedPlace: event.text,
+            cityState: cityLocations[event.index].state,
+            cityCountry: cityLocations[event.index].country,
+
+          ));
+      } catch (_) {
+        emit(WeatherErrorState());
+      }
+    });
+
     on<WeatherClearEvent>((event, emit) async {
       emit(WeatherEmptyState());
     });

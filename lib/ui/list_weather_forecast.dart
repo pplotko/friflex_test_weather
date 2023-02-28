@@ -46,7 +46,7 @@ class ListWeatherForecast extends StatelessWidget {
           if (state is WeatherLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is WeatherLoadedState) {
+          if (state is WeatherLoadedState/* || state is WeatherChoosingCityState*/) {
             final Map <int, List<num>> indexMap ={};
             final List<int> indexList = [];
             ///I fill the dictionary by keys 0, 1, 2 with a list {index in the block list, temperature value}
@@ -69,6 +69,7 @@ class ListWeatherForecast extends StatelessWidget {
             for (int i=0; i <3; i++) {
               indexList.add(indexMap[i]![0] as int );
             }
+            print('отработала сортировка');
             return
               Container(
                 color: Theme.of(context).backgroundColor,
@@ -90,7 +91,7 @@ class ListWeatherForecast extends StatelessWidget {
                         spreadRadius: 4,
                       ),
                     ],
-                    color: Color(0x33f9e3ce),
+                    color: const Color(0x33f9e3ce),
                   ),
                   height: 140,
                   padding: const EdgeInsets.all(16),
