@@ -19,7 +19,6 @@ class DetailedWeatherInformationPage extends StatefulWidget {
 
 class _DetailedWeatherInformationPageState
     extends State<DetailedWeatherInformationPage> {
-
   @override
   void initState() {
     /// sending event to upload state
@@ -29,16 +28,23 @@ class _DetailedWeatherInformationPageState
 
   @override
   Widget build(BuildContext context) {
+    const myTextStyle13 = TextStyle(
+      fontSize: 13,
+      // color: Color(0XFFFFFFFF),
+      fontWeight: FontWeight.w400,
+    );
+
     /// Creating a SnackBar widget to show during an error
     SnackBar snackBar = SnackBar(
       content: const Text('Ошибка получения данных'),
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height/2- 50,
+        bottom: MediaQuery.of(context).size.height / 2 - 50,
         left: 24,
         right: 24,
       ),
     );
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -49,50 +55,65 @@ class _DetailedWeatherInformationPageState
             icon: const Icon(Icons.brightness_6),
             onPressed: () => context.read<ThemeCubit>().toggleTheme(),
           ),
+
           ///Button for next page: WeatherInThreeDays
-          IconButton(
-            key: const Key('weather_in_three_days_iconButton'),
-            icon: const Icon(Icons.more_horiz),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => WeatherInThreeDays(text: widget.text,)),
-            ),
-          ),
+          BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
+            if (BlocProvider.of<WeatherBloc>(context).state is WeatherLoadedState
+              || BlocProvider.of<WeatherBloc>(context).state is WeatherLoadEventWithCityCoordinates)
+              {
+                return IconButton(
+                  key: const Key('weather_in_three_days_iconButton'),
+                  icon: const Icon(Icons.more_horiz),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WeatherInThreeDays(text: widget.text)),
+                    );
+                  },
+              );
+              } else {return SizedBox();}
+              return SizedBox();
+          }),
         ],
       ),
       body: MultiBlocListener(
         listeners: [
           /// I need a listener to throw out the snack bar when an error occurs
-          BlocListener <WeatherBloc, WeatherState>(
-            listener: (ctx, state) {
-              if (state is! WeatherErrorState) return;
-              ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
-            })
+          BlocListener<WeatherBloc, WeatherState>(listener: (ctx, state) {
+            if (state is! WeatherErrorState) return;
+            ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+          })
         ],
+
         /// building ui depending on the state
-        child: BlocBuilder<WeatherBloc, WeatherState>(
-            builder: (context, state) {
-              if (state is WeatherEmptyState) {
-                const Center(child: Text('No data received. Press button "Load"',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                );
-              }
-              if (state is WeatherLoadingState) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: Color(0xFFf9e3ce),
-                  ),
-                );
-              }
-              if (state is WeatherLoadedState) {
-                final iconUrl = 'http://openweathermap.org/img/w/'
-                    '${state.loadedWeather.current.weather[0].icon}.png';
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView(
-                    padding: const EdgeInsets.all(8),
-                    children: [Column(
+        child:
+          BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
+            if (state is WeatherEmptyState) {
+              const Center(
+                child: Text(
+                  'No data received. Press button "Load"',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              );
+            }
+            if (state is WeatherLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xFFf9e3ce),
+                ),
+              );
+            }
+            if (state is WeatherLoadedState) {
+              final iconUrl = 'http://openweathermap.org/img/w/'
+                '${state.loadedWeather.current.weather[0].icon}.png';
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(8),
+                  children: [
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -105,39 +126,32 @@ class _DetailedWeatherInformationPageState
                               children: [
                                 Row(
                                   children: [
-                                    Text( ///showing the current temperature
-                                      '${state.loadedWeather.current.temp != null
-                                          ? (state.loadedWeather.current.temp - 273).roundToDouble()
-                                          : 'нет данных'}',
+                                    Text(
+                                      ///showing the current temperature
+                                      '${state.loadedWeather.current.temp != null ? (state.loadedWeather.current.temp - 273).roundToDouble() : 'нет данных'}',
                                       style: const TextStyle(
                                         fontSize: 32,
-                                        color: Color(0XFFFFFFFF),
+                                        // color: Color(0XFFFFFFFF),
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
+                                    const SizedBox(width: 10),
                                     const Text(
                                       '°C',
                                       style: TextStyle(
                                         fontSize: 32,
-                                        color: Color(0XFFFFFFFF),
+                                        // color: Color(0XFFFFFFFF),
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 6,
-                                ),
+                                const SizedBox(height: 6),
                                 Text(
-                                  '${state.loadedWeather.current.weather[0].main != null
-                                      ? state.loadedWeather.current.weather[0].main
-                                      : 'нет данных'} ',
+                                  '${state.loadedWeather.current.weather[0].main ?? 'нет данных'} ',
                                   style: const TextStyle(
                                     fontSize: 24,
-                                    color: Color(0XFFFFFFFF),
+                                    // color: Color(0XFFFFFFFF),
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -162,9 +176,11 @@ class _DetailedWeatherInformationPageState
                                   print('$error $stackTrace');
                                   return SnackBar(
                                     content: Container(
-                                      padding: const EdgeInsets.only(top: 30, bottom: 10),
+                                      padding: const EdgeInsets.only(
+                                          top: 30, bottom: 10),
                                       child: Icon(
-                                        Icons.signal_wifi_connected_no_internet_4,
+                                        Icons
+                                            .signal_wifi_connected_no_internet_4,
                                         color: Colors.grey[600],
                                         size: 60,
                                       ),
@@ -175,92 +191,101 @@ class _DetailedWeatherInformationPageState
                             ),
                           ],
                         ),
+
                         const SizedBox(height: 16),
                         Text(
-                          'pressure: ${state.loadedWeather.current.pressure != null
-                              ? (state.loadedWeather.current.pressure)
-                              : 'нет данных'} hPa',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0XFFFFFFFF),
-                            fontWeight: FontWeight.w400,
-                          ),
+                          'pressure: ${state.loadedWeather.current.pressure ?? 'нет данных'} hPa',
+                          style: myTextStyle13,
                         ),
                         Text(
-                          'humidity: ${state.loadedWeather.current.humidity != null
-                              ? (state.loadedWeather.current.humidity)
-                              : 'нет данных'} %',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0XFFFFFFFF),
-                            fontWeight: FontWeight.w400,
-                          ),
+                          'humidity: ${state.loadedWeather.current.humidity ?? 'нет данных'} %',
+                          style: myTextStyle13,
                         ),
                         Text(
-                          'wind speed: ${state.loadedWeather.current.wind_speed != null
-                              ? (state.loadedWeather.current.wind_speed)
-                              : 'нет данных'} m/s',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0XFFFFFFFF),
-                            fontWeight: FontWeight.w400,
-                          ),
+                          'wind speed: ${state.loadedWeather.current.wind_speed ?? 'нет данных'} m/s',
+                          style: myTextStyle13,
                         ),
                         Text(
-                          'weather description: ${state.loadedWeather.current.weather[0].description != null
-                              ? (state.loadedWeather.current.weather[0].description)
-                              : 'нет данных'} ',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0XFFFFFFFF),
-                            fontWeight: FontWeight.w400,
-                          ),
+                          'weather description: ${state.loadedWeather.current.weather[0].description ?? 'нет данных'} ',
+                          style: myTextStyle13,
                         ),
                         const SizedBox(height: 40),
 
-                        // Show current weather coordinates
-                        Text('State: ${state.cityState} '),
-                        Text('Country: ${state.cityCountry} '),
-                        const Text('Location coordinates:'),
-                        Text('longitude= ${state.loadedWeather.lon ?? 'нет данных'},'
-                            ' latitude = ${state.loadedWeather.lat ?? 'нет данных'}'
+                        // Show current city location
+                        Text(
+                          'State: ${state.cityState} ',
+                          style: myTextStyle13,
+                        ),
+                        Text(
+                          'Country: ${state.cityCountry} ',
+                          style: myTextStyle13,
+                        ),
+                        const Text(
+                          'Location coordinates:',
+                          style: myTextStyle13,
+                        ),
+                        Text(
+                          'latitude = ${state.loadedWeather.lat ?? 'нет данных'}, '
+                          'longitude= ${state.loadedWeather.lon ?? 'нет данных'}',
+                          style: myTextStyle13,
                         ),
 
                         const SizedBox(height: 4),
                       ],
-                    ),]
-                  ),
-                );
-              }
+                    ),
+                ]),
+            );
+          }
 
+          if (state is WeatherChoosingCityState) {
+            final cityLocationsList = state.cityLocations;
 
-              if (state is WeatherChoosingCityState){
-                final cityLocationsList = state.cityLocations;
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: cityLocationsList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
+            return ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(8),
+              itemCount: cityLocationsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
                     child: ListTile(
-                     leading: const Icon(Icons.location_city),
-                      title:Column(
+                      leading: const Icon(Icons.location_city),
+                      title: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(cityLocationsList[index].state, style: const TextStyle(fontSize: 18)),
-                          Text(cityLocationsList[index].country, style: const TextStyle(fontSize: 22)),
+                          Text(
+                            cityLocationsList[index].state,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          Text(
+                            cityLocationsList[index].country,
+                            style: const TextStyle(fontSize: 22),
+                          ),
                         ],
                       ),
-                      subtitle: Text("city.latitude: ${cityLocationsList[index].latitude}, city.longitude: ${cityLocationsList[index].longitude}'"),
+                      subtitle: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("Location coordinates:"),
+                          Text( "latitude: ${cityLocationsList[index].latitude},"),
+                          Text( "longitude: ${cityLocationsList[index].longitude}"),
+                        ],
+                        ),
+                      ),
                     ),
-                    onTap: () {BlocProvider.of<WeatherBloc>(context).add(WeatherLoadEventWithCityCoordinates(widget.text, index));},
-                  );}
-                );
-              }
-              return Container();
+                    onTap: () {
+                      BlocProvider.of<WeatherBloc>(context).add(
+                          WeatherLoadEventWithCityCoordinates(
+                              widget.text, index));
+                      setState(() { });
+                    },
+                  );
+                });
             }
-        ),
+              return Container();
+        }),
       ),
     );
   }

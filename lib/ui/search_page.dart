@@ -53,6 +53,7 @@ class _SearchPageState extends State<SearchPage> {
         ],
       ),
       body: ListView(
+        physics: const BouncingScrollPhysics(),
         children: [Column(
           children: [
             Padding(

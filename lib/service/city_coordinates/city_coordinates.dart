@@ -15,7 +15,7 @@ class CityCoordinates {
   => CityCoordinates(
       latitude: json['lat'] as double,
       longitude: json['lon'] as double,
-      country: json['country'] ?? '' as String,
-      state: json['state'] ?? '' as String,
+      country: json['country']  ?? '' as String,
+      state: json['state']  ?? '' as String,
     );
 }

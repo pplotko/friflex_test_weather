@@ -7,12 +7,12 @@ part of 'sys.dart';
 // **************************************************************************
 
 Sys _$SysFromJson(Map<String, dynamic> json) => Sys(
-      type: json['type'] ?? 0 as int,
-      id: json['id'] ?? 0  as int,
-      message: (json['message'] ?? 0.0 as num).toDouble(),
+      type: json['type']  ?? 0 as int,
+      id: json['id']  ?? 0 as int,
+      message: (json['message'] ?? 0.0 as num ).toDouble(),
       country: json['country'] as String,
-      sunrise: json['sunrise'] ?? 0  as int,
-      sunset: json['sunset'] ?? 0  as int,
+      sunrise: json['sunrise']  ?? 0 as int ,
+      sunset: json['sunset']  ?? 0 as int ,
     );
 
 Map<String, dynamic> _$SysToJson(Sys instance) => <String, dynamic>{

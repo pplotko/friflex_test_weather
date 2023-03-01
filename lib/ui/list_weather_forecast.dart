@@ -46,7 +46,7 @@ class ListWeatherForecast extends StatelessWidget {
           if (state is WeatherLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is WeatherLoadedState/* || state is WeatherChoosingCityState*/) {
+          if (state is WeatherLoadedState) {
             final Map <int, List<num>> indexMap ={};
             final List<int> indexList = [];
             ///I fill the dictionary by keys 0, 1, 2 with a list {index in the block list, temperature value}
@@ -99,6 +99,7 @@ class ListWeatherForecast extends StatelessWidget {
                   /// I'll use my sorted list of indexes for 3 days: indexList[]
                   /// to show the days with a lower temperature on the screen first
                   ListView.builder(
+                    physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     itemCount: indexList.length,
                     itemBuilder: (BuildContext context, int index) {
